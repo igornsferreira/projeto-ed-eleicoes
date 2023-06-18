@@ -1,0 +1,6 @@
+Candidato: Igor
+Numero: 21
+Candidato: Francisco
+Numero: 22
+Candidato: Orlando
+Numero: 22

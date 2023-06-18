@@ -1,0 +1,16 @@
+========== Relatório de Eleição ==========
+Total de votos registrados: 1
+Total de votos por candidato:
+Candidato: Igor
+Número: 21
+Votos: 0
+------------------------------------------
+Candidato: Francisco
+Número: 22
+Votos: 0
+------------------------------------------
+Candidato: Orlando
+Número: 22
+Votos: 0
+------------------------------------------
+Total de eleitores faltosos: 2
