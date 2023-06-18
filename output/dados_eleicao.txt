@@ -1,0 +1,10 @@
+Candidato: Igor, Número: 2, Votos: 0
+Candidato: Hugo, Número: 5, Votos: 0
+Candidato: Veronica, Número: 75, Votos: 0
+Eleitor: Nem, Título: 1
+Eleitor: Nira, Título: 2
+Eleitor: Bianca, Título: 3
+Eleitor: Hanna, Título: 4
+Voto: 2
+Voto: 2
+Voto: 75
