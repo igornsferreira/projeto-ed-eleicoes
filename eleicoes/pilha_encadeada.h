@@ -64,3 +64,4 @@ void Print_Stack(Pilha *P) {
         aux = aux->prox;
     }
 }
+

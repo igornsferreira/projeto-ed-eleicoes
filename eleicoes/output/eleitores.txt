@@ -1,3 +1,0 @@
-Eleitor: hugo
-Titulo: 21212
-Idade: 13
