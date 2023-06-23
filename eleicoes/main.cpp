@@ -1,22 +1,20 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
 struct Candidato {
     string nome;
     int numero;
+    int votos;
 };
 
 struct Eleitor {
     string nome;
     int titulo;
     int idade;
-};
-
-struct Voto {
-    int numeroCandidato;
-    Voto* proximo;
+    bool votou;
 };
 
 struct ListaCandidatos {
@@ -31,13 +29,12 @@ struct ListaEleitores {
 
 ListaCandidatos* listaCandidatos = nullptr;
 ListaEleitores* listaEleitores = nullptr;
-ListaEleitores* filaVotos = nullptr;
-Voto* votos = nullptr;
 
 void inserirCandidato(string nome, int numero) {
     ListaCandidatos* novoCandidato = new ListaCandidatos;
     novoCandidato->candidato.nome = nome;
     novoCandidato->candidato.numero = numero;
+    novoCandidato->candidato.votos = 0;
     novoCandidato->proximo = nullptr;
 
     if (listaCandidatos == nullptr) {
@@ -49,35 +46,53 @@ void inserirCandidato(string nome, int numero) {
         }
         temp->proximo = novoCandidato;
     }
+
+    cout << "Candidato inserido com sucesso." << endl;
 }
 
 void removerCandidato(int numero) {
-    ListaCandidatos* anterior = nullptr;
-    ListaCandidatos* atual = listaCandidatos;
-
-    while (atual != nullptr && atual->candidato.numero != numero) {
-        anterior = atual;
-        atual = atual->proximo;
-    }
-
-    if (atual == nullptr) {
-        cout << "Candidato nao encontrado." << endl;
+    if (listaCandidatos == nullptr) {
+        cout << "Nao ha candidatos cadastrados." << endl;
         return;
     }
 
-    if (anterior == nullptr) {
-        listaCandidatos = atual->proximo;
-    } else {
-        anterior->proximo = atual->proximo;
+    if (listaCandidatos->candidato.numero == numero) {
+        ListaCandidatos* candidatoRemovido = listaCandidatos;
+        listaCandidatos = listaCandidatos->proximo;
+        delete candidatoRemovido;
+        cout << "Candidato removido com sucesso." << endl;
+        return;
     }
 
-    delete atual;
+    ListaCandidatos* temp = listaCandidatos->proximo;
+    ListaCandidatos* tempAnterior = listaCandidatos;
+    while (temp != nullptr) {
+        if (temp->candidato.numero == numero) {
+            tempAnterior->proximo = temp->proximo;
+            delete temp;
+            cout << "Candidato removido com sucesso." << endl;
+            return;
+        }
+        tempAnterior = temp;
+        temp = temp->proximo;
+    }
+
+    cout << "Nao foi encontrado um candidato com o numero fornecido." << endl;
 }
 
 void listarCandidatos() {
+    if (listaCandidatos == nullptr) {
+        cout << "Nao ha candidatos cadastrados." << endl;
+        return;
+    }
+
     ListaCandidatos* temp = listaCandidatos;
+    cout << "---- Candidatos Cadastrados ----" << endl;
     while (temp != nullptr) {
-        cout << "Nome: " << temp->candidato.nome << ", Numero: " << temp->candidato.numero << endl;
+        cout << "Nome: " << temp->candidato.nome << endl;
+        cout << "Numero: " << temp->candidato.numero << endl;
+        cout << "Votos: " << temp->candidato.votos << endl;
+        cout << "-----------------------------" << endl;
         temp = temp->proximo;
     }
 }
@@ -87,13 +102,8 @@ void inserirEleitor(string nome, int titulo, int idade) {
     novoEleitor->eleitor.nome = nome;
     novoEleitor->eleitor.titulo = titulo;
     novoEleitor->eleitor.idade = idade;
+    novoEleitor->eleitor.votou = false;
     novoEleitor->proximo = nullptr;
-
-    if (idade < 18) {
-        delete novoEleitor;
-        cout << "Eleitor nao apto para votar." << endl;
-        return;
-    }
 
     if (listaEleitores == nullptr) {
         listaEleitores = novoEleitor;
@@ -104,276 +114,219 @@ void inserirEleitor(string nome, int titulo, int idade) {
         }
         temp->proximo = novoEleitor;
     }
+
+    cout << "Eleitor inserido com sucesso." << endl;
 }
 
 void removerEleitor(int titulo) {
-    ListaEleitores* anterior = nullptr;
-    ListaEleitores* atual = listaEleitores;
-
-    while (atual != nullptr && atual->eleitor.titulo != titulo) {
-        anterior = atual;
-        atual = atual->proximo;
-    }
-
-    if (atual == nullptr) {
-        cout << "Eleitor nao encontrado." << endl;
+    if (listaEleitores == nullptr) {
+        cout << "Nao ha eleitores cadastrados." << endl;
         return;
     }
 
-    if (anterior == nullptr) {
-        listaEleitores = atual->proximo;
-    } else {
-        anterior->proximo = atual->proximo;
+    if (listaEleitores->eleitor.titulo == titulo) {
+        ListaEleitores* eleitorRemovido = listaEleitores;
+        listaEleitores = listaEleitores->proximo;
+        delete eleitorRemovido;
+        cout << "Eleitor removido com sucesso." << endl;
+        return;
     }
 
-    delete atual;
+    ListaEleitores* temp = listaEleitores->proximo;
+    ListaEleitores* tempAnterior = listaEleitores;
+    while (temp != nullptr) {
+        if (temp->eleitor.titulo == titulo) {
+            tempAnterior->proximo = temp->proximo;
+            delete temp;
+            cout << "Eleitor removido com sucesso." << endl;
+            return;
+        }
+        tempAnterior = temp;
+        temp = temp->proximo;
+    }
+
+    cout << "Nao foi encontrado um eleitor com o titulo fornecido." << endl;
 }
 
 void listarEleitores() {
+    if (listaEleitores == nullptr) {
+        cout << "Nao ha eleitores cadastrados." << endl;
+        return;
+    }
+
     ListaEleitores* temp = listaEleitores;
+    cout << "---- Eleitores Cadastrados ----" << endl;
     while (temp != nullptr) {
-        cout << "Nome: " << temp->eleitor.nome << ", Titulo: " << temp->eleitor.titulo << ", Idade: " << temp->eleitor.idade << endl;
+        cout << "Nome: " << temp->eleitor.nome << endl;
+        cout << "Titulo: " << temp->eleitor.titulo << endl;
+        cout << "Idade: " << temp->eleitor.idade << endl;
+        cout << "Votou: " << (temp->eleitor.votou ? "Sim" : "Nao") << endl;
+        cout << "-----------------------------" << endl;
         temp = temp->proximo;
     }
 }
 
-bool verificarEleitorApto(int idade) {
-    return idade >= 18;
+void votar(int titulo, int numero) {
+    ListaEleitores* tempEleitor = listaEleitores;
+    while (tempEleitor != nullptr) {
+        if (tempEleitor->eleitor.titulo == titulo) {
+            if (tempEleitor->eleitor.votou) {
+                cout << "Este eleitor ja votou." << endl;
+                return;
+            }
+            tempEleitor->eleitor.votou = true;
+            break;
+        }
+        tempEleitor = tempEleitor->proximo;
+    }
+
+    ListaCandidatos* tempCandidato = listaCandidatos;
+    while (tempCandidato != nullptr) {
+        if (tempCandidato->candidato.numero == numero) {
+            tempCandidato->candidato.votos++;
+            cout << "Voto registrado com sucesso." << endl;
+            return;
+        }
+        tempCandidato = tempCandidato->proximo;
+    }
+
+    cout << "Nao foi encontrado um candidato com o numero fornecido." << endl;
 }
 
-void registrarVoto(int numeroCandidato) {
-    Voto* novoVoto = new Voto;
-    novoVoto->numeroCandidato = numeroCandidato;
-    novoVoto->proximo = nullptr;
+void gerarRelatorio() {
+    ofstream arquivo;
+    arquivo.open("relatorio.txt");
 
-    if (filaVotos == nullptr) {
-        filaVotos = new ListaEleitores;
-        filaVotos->eleitor = listaEleitores->eleitor;
-        filaVotos->proximo = nullptr;
-        votos = novoVoto;
-    } else {
-        ListaEleitores* temp = filaVotos;
-        while (temp->proximo != nullptr) {
-            temp = temp->proximo;
-        }
-        temp->proximo = new ListaEleitores;
-        temp->proximo->eleitor = listaEleitores->eleitor;
-        temp->proximo->proximo = nullptr;
-
-        Voto* tempVotos = votos;
-        while (tempVotos->proximo != nullptr) {
-            tempVotos = tempVotos->proximo;
-        }
-        tempVotos->proximo = novoVoto;
-    }
-}
-
-void gerarRelatorios() {
-    ofstream arquivo("relatorio.txt");
-    if (!arquivo.is_open()) {
-        cout << "Erro ao abrir arquivo de relatorio." << endl;
-        return;
+    // Classificação dos candidatos
+    arquivo << "---- Classificacao dos Candidatos ----" << endl;
+    ListaCandidatos* tempCandidato = listaCandidatos;
+    while (tempCandidato != nullptr) {
+        arquivo << "Nome: " << tempCandidato->candidato.nome << endl;
+        arquivo << "Numero: " << tempCandidato->candidato.numero << endl;
+        arquivo << "Votos: " << tempCandidato->candidato.votos << endl;
+        arquivo << "-----------------------------" << endl;
+        tempCandidato = tempCandidato->proximo;
     }
 
-    ListaCandidatos* tempCandidatos = listaCandidatos;
-    int* votosCandidatos = new int[100];
-    for (int i = 0; i < 100; i++) {
-        votosCandidatos[i] = 0;
+    // Quantos votos cada candidato obteve
+    arquivo << endl;
+    arquivo << "---- Votos por Candidato ----" << endl;
+    tempCandidato = listaCandidatos;
+    while (tempCandidato != nullptr) {
+        arquivo << "Nome: " << tempCandidato->candidato.nome << endl;
+        arquivo << "Numero: " << tempCandidato->candidato.numero << endl;
+        arquivo << "Votos: " << tempCandidato->candidato.votos << endl;
+        arquivo << "-----------------------------" << endl;
+        tempCandidato = tempCandidato->proximo;
     }
 
-    Voto* tempVotos = votos;
-    int totalVotos = 0;
-    while (tempVotos != nullptr) {
-        votosCandidatos[tempVotos->numeroCandidato]++;
-        totalVotos++;
-        tempVotos = tempVotos->proximo;
-    }
-
-    arquivo << "Relatorio de Votos\n" << endl;
-
-    arquivo << "Quantidade de votos por candidato:" << endl;
-    while (tempCandidatos != nullptr) {
-        arquivo << "Candidato: " << tempCandidatos->candidato.nome << ", Numero: " << tempCandidatos->candidato.numero << ", Votos: " << votosCandidatos[tempCandidatos->candidato.numero] << endl;
-        tempCandidatos = tempCandidatos->proximo;
-    }
-
-    arquivo << "\nTotal de votos registrados: " << totalVotos << endl;
-
+    // Quantos eleitores faltaram na eleição
     int eleitoresFaltantes = 0;
-    ListaEleitores* tempEleitores = listaEleitores;
-    while (tempEleitores != nullptr) {
-        eleitoresFaltantes++;
-        tempEleitores = tempEleitores->proximo;
+    ListaEleitores* tempEleitor = listaEleitores;
+    while (tempEleitor != nullptr) {
+        if (!tempEleitor->eleitor.votou) {
+            eleitoresFaltantes++;
+        }
+        tempEleitor = tempEleitor->proximo;
     }
-    arquivo << "Quantidade de eleitores faltantes: " << eleitoresFaltantes << endl;
+
+    arquivo << endl;
+    arquivo << "---- Eleitores que Faltaram ----" << endl;
+    arquivo << "Quantidade: " << eleitoresFaltantes << endl;
 
     arquivo.close();
-    cout << "Relatorios gerados com sucesso." << endl;
-}
 
-void salvarDados() {
-    ofstream arquivo("dados.txt");
-    if (!arquivo.is_open()) {
-        cout << "Erro ao abrir arquivo de dados." << endl;
-        return;
-    }
-
-    ListaCandidatos* tempCandidatos = listaCandidatos;
-    while (tempCandidatos != nullptr) {
-        arquivo << tempCandidatos->candidato.nome << " " << tempCandidatos->candidato.numero << endl;
-        tempCandidatos = tempCandidatos->proximo;
-    }
-    arquivo << "-1" << endl;
-
-    ListaEleitores* tempEleitores = listaEleitores;
-    while (tempEleitores != nullptr) {
-        arquivo << tempEleitores->eleitor.nome << " " << tempEleitores->eleitor.titulo << " " << tempEleitores->eleitor.idade << endl;
-        tempEleitores = tempEleitores->proximo;
-    }
-    arquivo << "-1" << endl;
-
-    Voto* tempVotos = votos;
-    while (tempVotos != nullptr) {
-        arquivo << tempVotos->numeroCandidato << endl;
-        tempVotos = tempVotos->proximo;
-    }
-    arquivo << "-1" << endl;
-
-    arquivo.close();
-    cout << "Dados salvos com sucesso." << endl;
-}
-
-void carregarDados() {
-    ifstream arquivo("dados.txt");
-    if (!arquivo.is_open()) {
-        cout << "Erro ao abrir arquivo de dados." << endl;
-        return;
-    }
-
-    string linha;
-    getline(arquivo, linha);
-
-    while (linha != "-1") {
-        string nome = linha.substr(0, linha.find(' '));
-        int numero = stoi(linha.substr(linha.find(' ') + 1));
-        inserirCandidato(nome, numero);
-        getline(arquivo, linha);
-    }
-
-    getline(arquivo, linha);
-    while (linha != "-1") {
-        string nome = linha.substr(0, linha.find(' '));
-        linha = linha.substr(linha.find(' ') + 1);
-        int titulo = stoi(linha.substr(0, linha.find(' ')));
-        linha = linha.substr(linha.find(' ') + 1);
-        int idade = stoi(linha);
-        inserirEleitor(nome, titulo, idade);
-        getline(arquivo, linha);
-    }
-
-    getline(arquivo, linha);
-    while (linha != "-1") {
-        int numeroCandidato = stoi(linha);
-        registrarVoto(numeroCandidato);
-        getline(arquivo, linha);
-    }
-
-    arquivo.close();
-    cout << "Dados carregados com sucesso." << endl;
-}
-
-void exibirMenu() {
-    cout << "=== Simulador de Eleicao ===" << endl;
-    cout << "1. Cadastrar candidato" << endl;
-    cout << "2. Remover candidato" << endl;
-    cout << "3. Listar candidatos" << endl;
-    cout << "4. Cadastrar eleitor" << endl;
-    cout << "5. Remover eleitor" << endl;
-    cout << "6. Listar eleitores" << endl;
-    cout << "7. Registrar voto" << endl;
-    cout << "8. Gerar relatorios" << endl;
-    cout << "9. Salvar dados" << endl;
-    cout << "10. Carregar dados" << endl;
-    cout << "11. Sair" << endl;
-    cout << "Escolha uma opcao: ";
+    cout << "Relatorio gerado com sucesso." << endl;
 }
 
 int main() {
     int opcao;
-    string nome;
-    int numero;
-    int titulo;
-    int idade;
 
     do {
-        exibirMenu();
+        cout << "---- Sistema de Votacao ----" << endl;
+        cout << "1 - Inserir candidato" << endl;
+        cout << "2 - Remover candidato" << endl;
+        cout << "3 - Listar candidatos" << endl;
+        cout << "4 - Inserir eleitor" << endl;
+        cout << "5 - Remover eleitor" << endl;
+        cout << "6 - Listar eleitores" << endl;
+        cout << "7 - Votar" << endl;
+        cout << "8 - Gerar relatorio" << endl;
+        cout << "0 - Sair" << endl;
+        cout << "Escolha uma opcao: ";
         cin >> opcao;
+        cout << endl;
 
         switch (opcao) {
-            case 1:
+            case 1: {
+                string nome;
+                int numero;
                 cout << "Digite o nome do candidato: ";
-                cin.ignore();
-                getline(cin, nome);
+                cin >> nome;
                 cout << "Digite o numero do candidato: ";
                 cin >> numero;
                 inserirCandidato(nome, numero);
                 break;
-            case 2:
+            }
+            case 2: {
+                int numero;
                 cout << "Digite o numero do candidato a ser removido: ";
                 cin >> numero;
                 removerCandidato(numero);
                 break;
-            case 3:
+            }
+            case 3: {
                 listarCandidatos();
                 break;
-            case 4:
+            }
+            case 4: {
+                string nome;
+                int titulo, idade;
                 cout << "Digite o nome do eleitor: ";
-                cin.ignore();
-                getline(cin, nome);
+                cin >> nome;
                 cout << "Digite o titulo do eleitor: ";
                 cin >> titulo;
                 cout << "Digite a idade do eleitor: ";
                 cin >> idade;
                 inserirEleitor(nome, titulo, idade);
                 break;
-            case 5:
+            }
+            case 5: {
+                int titulo;
                 cout << "Digite o titulo do eleitor a ser removido: ";
                 cin >> titulo;
                 removerEleitor(titulo);
                 break;
-            case 6:
+            }
+            case 6: {
                 listarEleitores();
                 break;
-            case 7:
-                if (listaEleitores == nullptr) {
-                    cout << "Nenhum eleitor cadastrado." << endl;
-                    break;
-                }
+            }
+            case 7: {
+                int titulo, numero;
                 cout << "Digite o titulo do eleitor: ";
                 cin >> titulo;
-                cout << "Digite o numero do candidato escolhido: ";
+                cout << "Digite o numero do candidato: ";
                 cin >> numero;
-                registrarVoto(numero);
+                votar(titulo, numero);
                 break;
-            case 8:
-                gerarRelatorios();
+            }
+            case 8: {
+                gerarRelatorio();
                 break;
-            case 9:
-                salvarDados();
+            }
+            case 0: {
+                cout << "Saindo..." << endl;
                 break;
-            case 10:
-                carregarDados();
+            }
+            default: {
+                cout << "Opcao invalida. Digite novamente." << endl;
                 break;
-            case 11:
-                cout << "Encerrando o programa..." << endl;
-                break;
-            default:
-                cout << "Opcao invalida." << endl;
-                break;
+            }
         }
 
         cout << endl;
-    } while (opcao != 11);
+    } while (opcao != 0);
 
     return 0;
 }

@@ -1,8 +1,22 @@
-Relatorio de Votos
+---- Classificacao dos Candidatos ----
+Nome: Igor
+Numero: 1
+Votos: 4
+-----------------------------
+Nome: Hugo
+Numero: 2
+Votos: 2
+-----------------------------
 
-Quantidade de votos por candidato:
-Candidato: Igor, Numero: 203, Votos: 3
-Candidato: Hugo, Numero: 503, Votos: 2
+---- Votos por Candidato ----
+Nome: Igor
+Numero: 1
+Votos: 4
+-----------------------------
+Nome: Hugo
+Numero: 2
+Votos: 2
+-----------------------------
 
-Total de votos registrados: 5
-Quantidade de eleitores faltantes: 3
+---- Eleitores que Faltaram ----
+Quantidade: 0
