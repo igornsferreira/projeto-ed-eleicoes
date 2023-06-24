@@ -1,22 +1,27 @@
----- Classificacao dos Candidatos ----
-Nome: Igor
-Numero: 1
-Votos: 4
------------------------------
-Nome: Hugo
-Numero: 2
+===== Classificacao dos Candidatos =====
+Nome: Messi
+Número: 10
 Votos: 2
 -----------------------------
-
----- Votos por Candidato ----
-Nome: Igor
-Numero: 1
-Votos: 4
+Nome: Cristiano
+Número: 7
+Votos: 0
 -----------------------------
-Nome: Hugo
-Numero: 2
+Nome: Neymar
+Número: 11
+Votos: 1
+-----------------------------
+
+===== Votos por Candidato =====
+Nome: Messi
 Votos: 2
 -----------------------------
+Nome: Cristiano
+Votos: 0
+-----------------------------
+Nome: Neymar
+Votos: 1
+-----------------------------
 
----- Eleitores que Faltaram ----
-Quantidade: 0
+===== Eleitores que Faltaram =====
+Quantidade: 1

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <locale.h>
 #include <string>
 
 using namespace std;
@@ -47,12 +48,12 @@ void inserirCandidato(string nome, int numero) {
         temp->proximo = novoCandidato;
     }
 
-    cout << "Candidato inserido com sucesso." << endl;
+    cout << "Candidato inserido com sucesso!" << endl;
 }
 
 void removerCandidato(int numero) {
     if (listaCandidatos == nullptr) {
-        cout << "Nao ha candidatos cadastrados." << endl;
+        cout << "Não há candidatos cadastrados." << endl;
         return;
     }
 
@@ -77,20 +78,20 @@ void removerCandidato(int numero) {
         temp = temp->proximo;
     }
 
-    cout << "Nao foi encontrado um candidato com o numero fornecido." << endl;
+    cout << "Não foi encontrado um candidato com o número fornecido." << endl;
 }
 
 void listarCandidatos() {
     if (listaCandidatos == nullptr) {
-        cout << "Nao ha candidatos cadastrados." << endl;
+        cout << "Não há candidatos cadastrados." << endl;
         return;
     }
 
     ListaCandidatos* temp = listaCandidatos;
-    cout << "---- Candidatos Cadastrados ----" << endl;
+    cout << "===== Candidatos Cadastrados =====" << endl;
     while (temp != nullptr) {
         cout << "Nome: " << temp->candidato.nome << endl;
-        cout << "Numero: " << temp->candidato.numero << endl;
+        cout << "Número: " << temp->candidato.numero << endl;
         cout << "Votos: " << temp->candidato.votos << endl;
         cout << "-----------------------------" << endl;
         temp = temp->proximo;
@@ -98,6 +99,11 @@ void listarCandidatos() {
 }
 
 void inserirEleitor(string nome, int titulo, int idade) {
+    if (idade < 18) {
+        cout << "O eleitor é menor de 18 anos. Não pode votar." << endl;
+        return;
+    }
+
     ListaEleitores* novoEleitor = new ListaEleitores;
     novoEleitor->eleitor.nome = nome;
     novoEleitor->eleitor.titulo = titulo;
@@ -115,12 +121,13 @@ void inserirEleitor(string nome, int titulo, int idade) {
         temp->proximo = novoEleitor;
     }
 
-    cout << "Eleitor inserido com sucesso." << endl;
+    cout << "Eleitor inserido com sucesso!" << endl;
 }
+
 
 void removerEleitor(int titulo) {
     if (listaEleitores == nullptr) {
-        cout << "Nao ha eleitores cadastrados." << endl;
+        cout << "Não há eleitores cadastrados." << endl;
         return;
     }
 
@@ -145,17 +152,17 @@ void removerEleitor(int titulo) {
         temp = temp->proximo;
     }
 
-    cout << "Nao foi encontrado um eleitor com o titulo fornecido." << endl;
+    cout << "Não foi encontrado um eleitor com o titulo fornecido!" << endl;
 }
 
 void listarEleitores() {
     if (listaEleitores == nullptr) {
-        cout << "Nao ha eleitores cadastrados." << endl;
+        cout << "Não há eleitores cadastrados." << endl;
         return;
     }
 
     ListaEleitores* temp = listaEleitores;
-    cout << "---- Eleitores Cadastrados ----" << endl;
+    cout << "===== Eleitores Cadastrados =====" << endl;
     while (temp != nullptr) {
         cout << "Nome: " << temp->eleitor.nome << endl;
         cout << "Titulo: " << temp->eleitor.titulo << endl;
@@ -171,7 +178,7 @@ void votar(int titulo, int numero) {
     while (tempEleitor != nullptr) {
         if (tempEleitor->eleitor.titulo == titulo) {
             if (tempEleitor->eleitor.votou) {
-                cout << "Este eleitor ja votou." << endl;
+                cout << "Este eleitor já votou." << endl;
                 return;
             }
             tempEleitor->eleitor.votou = true;
@@ -184,13 +191,13 @@ void votar(int titulo, int numero) {
     while (tempCandidato != nullptr) {
         if (tempCandidato->candidato.numero == numero) {
             tempCandidato->candidato.votos++;
-            cout << "Voto registrado com sucesso." << endl;
+            cout << "Voto registrado com sucesso!" << endl;
             return;
         }
         tempCandidato = tempCandidato->proximo;
     }
 
-    cout << "Nao foi encontrado um candidato com o numero fornecido." << endl;
+    cout << "Não foi encontrado um candidato com o número fornecido." << endl;
 }
 
 void gerarRelatorio() {
@@ -198,11 +205,11 @@ void gerarRelatorio() {
     arquivo.open("relatorio.txt");
 
     // Classificação dos candidatos
-    arquivo << "---- Classificacao dos Candidatos ----" << endl;
+    arquivo << "===== Classificacao dos Candidatos =====" << endl;
     ListaCandidatos* tempCandidato = listaCandidatos;
     while (tempCandidato != nullptr) {
         arquivo << "Nome: " << tempCandidato->candidato.nome << endl;
-        arquivo << "Numero: " << tempCandidato->candidato.numero << endl;
+        arquivo << "Número: " << tempCandidato->candidato.numero << endl;
         arquivo << "Votos: " << tempCandidato->candidato.votos << endl;
         arquivo << "-----------------------------" << endl;
         tempCandidato = tempCandidato->proximo;
@@ -210,11 +217,10 @@ void gerarRelatorio() {
 
     // Quantos votos cada candidato obteve
     arquivo << endl;
-    arquivo << "---- Votos por Candidato ----" << endl;
+    arquivo << "===== Votos por Candidato =====" << endl;
     tempCandidato = listaCandidatos;
     while (tempCandidato != nullptr) {
         arquivo << "Nome: " << tempCandidato->candidato.nome << endl;
-        arquivo << "Numero: " << tempCandidato->candidato.numero << endl;
         arquivo << "Votos: " << tempCandidato->candidato.votos << endl;
         arquivo << "-----------------------------" << endl;
         tempCandidato = tempCandidato->proximo;
@@ -231,19 +237,39 @@ void gerarRelatorio() {
     }
 
     arquivo << endl;
-    arquivo << "---- Eleitores que Faltaram ----" << endl;
+    arquivo << "===== Eleitores que Faltaram =====" << endl;
     arquivo << "Quantidade: " << eleitoresFaltantes << endl;
 
     arquivo.close();
 
-    cout << "Relatorio gerado com sucesso." << endl;
+    cout << "Relatório gerado com sucesso!" << endl;
 }
 
+void liberarMemoriaCandidatos() {
+    ListaCandidatos* temp = listaCandidatos;
+    while (temp != nullptr) {
+        ListaCandidatos* candidatoRemovido = temp;
+        temp = temp->proximo;
+        delete candidatoRemovido;
+    }
+}
+
+void liberarMemoriaEleitores() {
+    ListaEleitores* temp = listaEleitores;
+    while (temp != nullptr) {
+        ListaEleitores* eleitorRemovido = temp;
+        temp = temp->proximo;
+        delete eleitorRemovido;
+    }
+}
+
+
 int main() {
+    setlocale(LC_ALL, "Portuguese");
     int opcao;
 
     do {
-        cout << "---- Sistema de Votacao ----" << endl;
+        cout << "===== URNA ELETRÔNICA  =====" << endl;
         cout << "1 - Inserir candidato" << endl;
         cout << "2 - Remover candidato" << endl;
         cout << "3 - Listar candidatos" << endl;
@@ -253,7 +279,7 @@ int main() {
         cout << "7 - Votar" << endl;
         cout << "8 - Gerar relatorio" << endl;
         cout << "0 - Sair" << endl;
-        cout << "Escolha uma opcao: ";
+        cout << "Escolha uma opcão: ";
         cin >> opcao;
         cout << endl;
 
@@ -263,14 +289,14 @@ int main() {
                 int numero;
                 cout << "Digite o nome do candidato: ";
                 cin >> nome;
-                cout << "Digite o numero do candidato: ";
+                cout << "Digite o número do candidato: ";
                 cin >> numero;
                 inserirCandidato(nome, numero);
                 break;
             }
             case 2: {
                 int numero;
-                cout << "Digite o numero do candidato a ser removido: ";
+                cout << "Digite o número do candidato a ser removido: ";
                 cin >> numero;
                 removerCandidato(numero);
                 break;
@@ -306,7 +332,7 @@ int main() {
                 int titulo, numero;
                 cout << "Digite o titulo do eleitor: ";
                 cin >> titulo;
-                cout << "Digite o numero do candidato: ";
+                cout << "Digite o número do candidato: ";
                 cin >> numero;
                 votar(titulo, numero);
                 break;
@@ -320,13 +346,16 @@ int main() {
                 break;
             }
             default: {
-                cout << "Opcao invalida. Digite novamente." << endl;
+                cout << "Opcão inválida. Digite novamente." << endl;
                 break;
             }
         }
 
         cout << endl;
     } while (opcao != 0);
+
+    liberarMemoriaCandidatos();
+    liberarMemoriaEleitores();
 
     return 0;
 }
